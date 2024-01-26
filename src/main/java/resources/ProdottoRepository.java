@@ -5,12 +5,12 @@ import enums.ProdottoTipologia;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.util.Optional;
+import java.util.List;
 
 @ApplicationScoped
 public class ProdottoRepository implements PanacheRepository<Prodotto> {
 
-    public Optional<Prodotto> findByTipoProdotto(ProdottoTipologia tipo) {
-        return find("tipoProd = ?1", tipo).singleResultOptional();
+    public List<Prodotto> findByTipoProdotto(ProdottoTipologia tipo) {
+        return list("tipoProd = ?1", tipo);
     }
 }

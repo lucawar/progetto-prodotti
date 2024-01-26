@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
-import java.util.Optional;
 
 @Path("/prodotti")
 @RequestScoped
@@ -43,9 +42,8 @@ public class ProdottoResources {
     //FILTRA PER TIPO PRODOTTO
     @GET
     @Path("/tipo/{tipo}")
-    public Prodotto getProdottoPerTipo(@PathParam("tipo") ProdottoTipologia tipo) {
-        Optional<Prodotto> prodottoOptional = pr.findByTipoProdotto(tipo);
-        return prodottoOptional.orElseThrow(() -> new NotFoundException("Prodotto non trovato"));
+    public List<Prodotto> getProdottiPerTipo(@PathParam("tipo") ProdottoTipologia tipo) {
+        return pr.findByTipoProdotto(tipo);
     }
 }
 
