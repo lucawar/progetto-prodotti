@@ -21,29 +21,98 @@ public class ProdottoResources {
     ProdottoRepository pr;
 
 
-    //CREA PRODOTTO
+    // CREAZIONE DI UN NUOVO PRODOTTO
     @POST
     @Path("/crea")
     @Transactional
     public Response crea(Prodotto prodotto) {
-        if (!prodotto.isPersistent()) prodotto.persist();
-        return Response.ok(true).build();
+        if (prodotto.isPersistent()) {
+            prodotto.persist();
+            return Response.ok(prodotto).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Il prodotto esiste già.")
+                    .build();
+        }
     }
 
-    //GET LISTA PRODOTTI
+    // OTTIENI UN PRODOTTO SPECIFICO PER ID
+    @GET
+    @Path("/{id}")
+    public Response getById(@PathParam("id") Long id) {
+        Prodotto prodotto = Prodotto.findById(id);
+        if (prodotto != null) {
+            return Response.ok(prodotto).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Prodotto con ID: " + id + " non trovato.")
+                    .build();
+        }
+    }
+
+    // OTTIENI LA LISTA DI TUTTI I PRODOTTI
     @GET
     @Path("/all")
     public Response getAll() {
         List<Prodotto> listaProdotti = Prodotto.listAll();
+        if (listaProdotti.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Nessun prodotto trovato.")
+                    .build();
+        }
         return Response.ok(listaProdotti).build();
     }
 
+    // AGGIORNA UN PRODOTTO ESISTENTE
+    @PUT
+    @Path("/modifica/{id}")
+    @Transactional
+    public Response modifica(@PathParam("id") Long id, Prodotto nuovoProdotto) {
+        Prodotto prodottoEsistente = Prodotto.findById(id);
 
-    //FILTRA PER TIPO PRODOTTO
+        if (prodottoEsistente != null) {
+            prodottoEsistente.nome = nuovoProdotto.nome;
+            prodottoEsistente.marca = nuovoProdotto.marca;
+            prodottoEsistente.descrizione = nuovoProdotto.descrizione;
+            prodottoEsistente.quantitaMagazzino = nuovoProdotto.quantitaMagazzino;
+            prodottoEsistente.prezzo = nuovoProdotto.prezzo;
+            prodottoEsistente.tipoProd = nuovoProdotto.tipoProd;
+
+            return Response.ok(prodottoEsistente).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Prodotto con ID: " + id + " non trovato.")
+                    .build();
+        }
+    }
+
+    // ELIMINA UN PRODOTTO PER ID
+    @DELETE
+    @Path("/elimina/{id}")
+    @Transactional
+    public Response elimina(@PathParam("id") Long id) {
+        Prodotto prodotto = Prodotto.findById(id);
+        if (prodotto != null) {
+            prodotto.delete();
+            return Response.ok(true).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Prodotto con ID: " + id + " non trovato.")
+                    .build();
+        }
+    }
+
+    // FILTRA PER TIPO PRODOTTO
     @GET
     @Path("/tipo/{tipo}")
-    public List<Prodotto> getProdottiPerTipo(@PathParam("tipo") ProdottoTipologia tipo) {
-        return pr.findByTipoProdotto(tipo);
+    public Response getProdottiPerTipo(@PathParam("tipo") ProdottoTipologia tipo) {
+        List<Prodotto> prodotti = pr.findByTipoProdotto(tipo);
+        if (prodotti.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Nessun prodotto trovato per il tipo: " + tipo)
+                    .build();
+        }
+        return Response.ok(prodotti).build();
     }
 }
 
