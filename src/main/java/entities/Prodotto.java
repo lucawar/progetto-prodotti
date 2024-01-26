@@ -15,6 +15,9 @@ public class Prodotto extends PanacheEntity {
     @Column(name = "nome_prodotto")
     public String nome;
 
+    @Column (name = "marca")
+    public String marca;
+
     @Column(name = "descrizione")
     public String descrizione;
 
