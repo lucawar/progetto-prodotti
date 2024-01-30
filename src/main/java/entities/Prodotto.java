@@ -15,7 +15,7 @@ public class Prodotto extends PanacheEntity {
     @Column(name = "nome_prodotto")
     public String nome;
 
-    @Column (name = "marca")
+    @Column(name = "marca")
     public String marca;
 
     @Column(name = "descrizione")
@@ -30,4 +30,16 @@ public class Prodotto extends PanacheEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_prodotto")
     public ProdottoTipologia tipoProd;
+
+    @Override
+    public String toString() {
+        return String.format("Prodotto {" +
+                "nome='%s', " +
+                "marca='%s', " +
+                "descrizione='%s', " +
+                "quantitaMagazzino=%d, " +
+                "prezzo=%.2f, " +
+                "tipoProd=%s" +
+                "}", nome, marca, descrizione, quantitaMagazzino, prezzo, tipoProd);
+    }
 }
