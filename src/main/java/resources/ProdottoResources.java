@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Path("/prodotti")
@@ -118,5 +119,24 @@ public class ProdottoResources {
             throw new NotFoundException("Nessun prodotto trovato per la tipologia: " + tipo);
         }
     }
+
+    // Esempio di utilizzo della nuova query
+    @GET
+    @Path("/filtro")
+    public Response getProdottiByAttributi(
+            @QueryParam("marca") String marca,
+            @QueryParam("prezzo") BigDecimal prezzo) {
+
+        List<Prodotto> prodotti = pr.findByAttributi(marca, prezzo);
+
+        if (!prodotti.isEmpty()) {
+            log.info("PRODOTTI TROVATI PER I PARAMETRI SPECIFICATI");
+            return Response.ok(prodotti).build();
+        } else {
+            log.info("NESSUN PRODOTTO TROVATO PER I PARAMETRI SPECIFICATI");
+            throw new NotFoundException("Nessun prodotto trovato per i parametri specificati.");
+        }
+    }
 }
+
 
