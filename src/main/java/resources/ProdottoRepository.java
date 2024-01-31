@@ -7,7 +7,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 @Slf4j
@@ -26,27 +28,20 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
     }
     */
 
+    // QUERY DINAMICA PER RICERCA DEI PRODOTTI TRAMITE 1 O PIU ATTRIBUTI
     public List<Prodotto> findByAttributi(String marca, BigDecimal prezzo) {
-        List<Prodotto> result;
-
-        // Almeno uno dei parametri è specificato, costruisci la query con i parametri specificati
-        String queryString = "1 = 1";
+        String queryString = "FROM Prodotto p WHERE 1 = 1";
+        Map<String, Object> params = new HashMap<>();
 
         if (marca != null) {
-            queryString += " and marca = ?1";
+            queryString += " AND p.marca = :marca";
+            params.put("marca", marca);
         }
         if (prezzo != null) {
-            queryString += " and prezzo >= ?2";
+            queryString += " AND p.prezzo = :prezzo";
+            params.put("prezzo", prezzo);
         }
 
-        // Esegui la query solo se almeno uno dei parametri è specificato
-        if (marca != null || prezzo != null) {
-            result = list(queryString, marca, prezzo);
-        } else {
-            // Nessun parametro specificato, esegui una query senza restrizioni
-            result = listAll();
-        }
-        log.info("Query findByAttributi chiamata correttamente con i parametri: marca={}, prezzo={}", marca, prezzo);
-        return result;
+        return find(queryString, params).list();
     }
 }
