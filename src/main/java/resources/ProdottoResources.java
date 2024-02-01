@@ -50,8 +50,7 @@ public class ProdottoResources {
             log.info("PRODOTTO CON ID: " + id + "TROVATO {}");
             return Response.ok(prodotto).build();
         } else {
-            log.info("PRODOTTO CON ID: " + id + " NON TROVATO {}");
-            throw new NotFoundException("Prodotto con ID: " + id + " non trovato.");
+            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
         }
     }
 
@@ -64,8 +63,7 @@ public class ProdottoResources {
             log.info("LISTA PRODOTTI OTTENUTA {}", listaProdotti);
             return Response.ok(listaProdotti).build();
         } else {
-            log.info("NESSUN PRODOTTO TROVATO");
-            throw new NotFoundException("Nessun prodotto trovato");
+            throw new NotFoundException("NESSUN PRODOTTO TROVATO");
         }
     }
 
@@ -85,8 +83,7 @@ public class ProdottoResources {
             log.info("PRODOTTO CON ID: " + id + " TROVATO {}");
             return Response.ok(prodottoEsistente).build();
         } else {
-            log.info("PRODOTTO CON ID: " + id + " NON TROVATO {}");
-            throw new NotFoundException("Prodotto con ID: " + id + " non trovato.");
+            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
         }
     }
 
@@ -101,40 +98,28 @@ public class ProdottoResources {
             log.info("PRODOTTO CON ID: " + id + " ELIMINATO {}");
             return Response.ok(true).build();
         } else {
-            log.info("PRODOTTO CON ID: " + id + " NON TROVATO {}");
-            throw new NotFoundException("Prodotto con ID: " + id + " non trovato.");
+            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
         }
     }
 
-    // FILTRA PER TIPO PRODOTTO
-    @GET
-    @Path("/tipo/{tipo}")
-    public Response getProdottiPerTipo(@PathParam("tipo") ProdottoTipologia tipo) {
-        List<Prodotto> prodotti = pr.findByTipoProdotto(tipo);
-        if (!prodotti.isEmpty()) {
-            log.info("PRODOTTO/I TROVATO PER LA TIPOLOGIA: " + tipo);
-            return Response.ok(prodotti).build();
-        } else {
-            log.info("NESSUN PRODOTTO TROVATO PER LA TIPOLOGIA: " + tipo);
-            throw new NotFoundException("Nessun prodotto trovato per la tipologia: " + tipo);
-        }
-    }
 
-    // Esempio di utilizzo della nuova query
+    // FILTRAGGIO PRODOTTI
     @GET
     @Path("/filtro")
     public Response getProdottiByAttributi(
             @QueryParam("marca") String marca,
-            @QueryParam("prezzo") BigDecimal prezzo) {
+            @QueryParam("tipoProd") ProdottoTipologia tipoProd,
+            @QueryParam("nome") String nome,
+            @QueryParam("prezzoMin") BigDecimal prezzoMin,
+            @QueryParam("prezzoMax") BigDecimal prezzoMax) {
 
-        List<Prodotto> prodotti = pr.findByAttributi(marca, prezzo);
+        List<Prodotto> prodotti = pr.findByAttributi(marca, tipoProd, nome, prezzoMin, prezzoMax);
 
         if (!prodotti.isEmpty()) {
             log.info("PRODOTTI TROVATI PER I PARAMETRI SPECIFICATI");
             return Response.ok(prodotti).build();
         } else {
-            log.info("NESSUN PRODOTTO TROVATO PER I PARAMETRI SPECIFICATI");
-            throw new NotFoundException("Nessun prodotto trovato per i parametri specificati.");
+            throw new NotFoundException("NESSUN PRODOTTO TROVATO PER I PARAMETRI SPECIFICATI");
         }
     }
 }

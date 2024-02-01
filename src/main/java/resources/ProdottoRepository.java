@@ -20,16 +20,8 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
         return list("tipoProd = ?1", tipo);
     }
 
-    /*
-    public List<Prodotto> findByMarcaQuantitaPrezzo(String marca, int quantitaMagazzino, BigDecimal prezzo) {
-        List<Prodotto> result = list("marca = ?1 and quantitaMagazzino = ?2 and prezzo = ?3", marca, quantitaMagazzino, prezzo);
-        log.info("Query findByMarcaQuantitaPrezzo chiamata correttamente con i parametri: marca={}, quantitaMagazzino={}, prezzo={}", marca, quantitaMagazzino, prezzo);
-        return result;
-    }
-    */
-
     // QUERY DINAMICA PER RICERCA DEI PRODOTTI TRAMITE 1 O PIU ATTRIBUTI
-    public List<Prodotto> findByAttributi(String marca, BigDecimal prezzo) {
+    public List<Prodotto> findByAttributi(String marca, ProdottoTipologia tipoProd, String nome, BigDecimal prezzoMin, BigDecimal prezzoMax) {
         String queryString = "FROM Prodotto p WHERE 1 = 1";
         Map<String, Object> params = new HashMap<>();
 
@@ -37,11 +29,24 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
             queryString += " AND p.marca = :marca";
             params.put("marca", marca);
         }
-        if (prezzo != null) {
-            queryString += " AND p.prezzo = :prezzo";
-            params.put("prezzo", prezzo);
+        if (tipoProd != null) {
+            queryString += " AND p.tipoProd = :tipoProd";
+            params.put("tipoProd", tipoProd);
+        }
+        if (nome != null) {
+            queryString += " AND p.nome = :nome";
+            params.put("nome", nome);
+        }
+        if (prezzoMin != null) {
+            queryString += " AND p.prezzo >= :prezzoMin";
+            params.put("prezzoMin", prezzoMin);
+        }
+        if (prezzoMax != null) {
+            queryString += " AND p.prezzo <= :prezzoMax";
+            params.put("prezzoMax", prezzoMax);
         }
 
+        log.info("PRODOTTI FILTRATI CON SUCCESSO!!!!!!");
         return find(queryString, params).list();
     }
 }
