@@ -80,7 +80,6 @@ public class ProdottoResources {
             prodottoEsistente.nome = nuovoProdotto.nome;
             prodottoEsistente.marca = nuovoProdotto.marca;
             prodottoEsistente.descrizione = nuovoProdotto.descrizione;
-            prodottoEsistente.quantitaMagazzino = nuovoProdotto.quantitaMagazzino;
             prodottoEsistente.prezzo = nuovoProdotto.prezzo;
             prodottoEsistente.tipoProd = nuovoProdotto.tipoProd;
             log.info("PRODOTTO CON ID: " + id + " TROVATO {}");

@@ -21,9 +21,6 @@ public class Prodotto extends PanacheEntity {
     @Column(name = "descrizione")
     public String descrizione;
 
-    @Column(name = "quantità_magazzino")
-    public int quantitaMagazzino;
-
     @Column(name = "prezzo_prodotto")
     public BigDecimal prezzo;
 
@@ -37,9 +34,8 @@ public class Prodotto extends PanacheEntity {
                 "nome='%s', " +
                 "marca='%s', " +
                 "descrizione='%s', " +
-                "quantitaMagazzino=%d, " +
                 "prezzo=%.2f, " +
                 "tipoProd=%s" +
-                "}", nome, marca, descrizione, quantitaMagazzino, prezzo, tipoProd);
+                "}", nome, marca, descrizione, prezzo, tipoProd);
     }
 }
