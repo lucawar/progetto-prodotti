@@ -37,7 +37,7 @@ public class ProdottoResources {
             log.info("PRODOTTO CREATO CON SUCCESSO {}", prodotto);
             return Response.ok(prodotto).build();
         } else {
-            throw new BadRequestException("Input non valido");
+            throw new BadRequestException("CAMPI NON VALIDI");
         }
     }
 
@@ -57,8 +57,11 @@ public class ProdottoResources {
     // OTTIENI LA LISTA DI TUTTI I PRODOTTI
     @GET
     @Path("/all")
-    public Response getAll() {
-        List<Prodotto> listaProdotti = Prodotto.listAll();
+    public Response getAll(
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("10") int limit) {
+
+        List<Prodotto> listaProdotti = Prodotto.findAll().page(offset, limit).list();
         if (!listaProdotti.isEmpty()) {
             log.info("LISTA PRODOTTI OTTENUTA {}", listaProdotti);
             return Response.ok(listaProdotti).build();
@@ -111,9 +114,11 @@ public class ProdottoResources {
             @QueryParam("tipoProd") ProdottoTipologia tipoProd,
             @QueryParam("nome") String nome,
             @QueryParam("prezzoMin") BigDecimal prezzoMin,
-            @QueryParam("prezzoMax") BigDecimal prezzoMax) {
+            @QueryParam("prezzoMax") BigDecimal prezzoMax,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("10") int limit) {
 
-        List<Prodotto> prodotti = pr.findByAttributi(marca, tipoProd, nome, prezzoMin, prezzoMax);
+        List<Prodotto> prodotti = pr.findByAttributi(marca, tipoProd, nome, prezzoMin, prezzoMax, offset, limit);
 
         if (!prodotti.isEmpty()) {
             log.info("PRODOTTI TROVATI PER I PARAMETRI SPECIFICATI");

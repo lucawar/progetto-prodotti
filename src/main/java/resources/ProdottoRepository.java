@@ -2,6 +2,7 @@ package resources;
 
 import entities.Prodotto;
 import enums.ProdottoTipologia;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
     }
 
     // QUERY DINAMICA PER RICERCA DEI PRODOTTI TRAMITE 1 O PIU ATTRIBUTI
-    public List<Prodotto> findByAttributi(String marca, ProdottoTipologia tipoProd, String nome, BigDecimal prezzoMin, BigDecimal prezzoMax) {
+    public List<Prodotto> findByAttributi(String marca, ProdottoTipologia tipoProd, String nome, BigDecimal prezzoMin, BigDecimal prezzoMax, int offset, int limit) {
         String queryString = "FROM Prodotto p WHERE 1 = 1";
         Map<String, Object> params = new HashMap<>();
 
@@ -46,7 +47,9 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
             params.put("prezzoMax", prezzoMax);
         }
 
+        PanacheQuery<Prodotto> query = find(queryString, params);
+        query.page(offset / limit, limit);
         log.info("PRODOTTI FILTRATI CON SUCCESSO!!!!!!");
-        return find(queryString, params).list();
+        return query.list();
     }
 }
