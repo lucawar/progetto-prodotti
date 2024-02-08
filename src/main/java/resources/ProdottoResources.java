@@ -23,8 +23,7 @@ import java.util.List;
 public class ProdottoResources {
 
 
-    @Inject
-    ProdottoRepository pr;
+    @Inject ProdottoRepository pr;
 
 
     // CREAZIONE DI UN NUOVO PRODOTTO
