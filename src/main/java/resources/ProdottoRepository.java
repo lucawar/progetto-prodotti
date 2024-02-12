@@ -49,7 +49,7 @@ public class ProdottoRepository implements PanacheRepository<Prodotto> {
 
         PanacheQuery<Prodotto> query = find(queryString, params);
         query.page(offset / limit, limit);
-        log.info("PRODOTTI FILTRATI CON SUCCESSO!!!!!!");
+        log.info("PRODOTTI FILTRATI CON SUCCESSO");
         return query.list();
     }
 }
