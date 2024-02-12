@@ -2,10 +2,7 @@ package entities;
 
 import enums.ProdottoTipologia;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome_prodotto", "marca"})})
 public class Prodotto extends PanacheEntity {
 
     @Column(name = "nome_prodotto")

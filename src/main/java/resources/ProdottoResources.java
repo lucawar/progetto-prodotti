@@ -41,6 +41,7 @@ public class ProdottoResources {
         if (violations.isEmpty()) {
             // Se non ci sono violazioni di validazione, restituisci una risposta 200 OK con un messaggio di successo
             log.info("CREAZIONE DEL PRODOTTO: {} - VALIDAZIONE RIUSCITA", prodotto);
+            prodotto.persist();
             return Response.ok(new Result("Prodotto valido! È stato convalidato con successo.")).build();
         } else {
             // Se ci sono violazioni di validazione, restituisci una risposta 400 Bad Request con i dettagli delle violazioni
@@ -48,8 +49,6 @@ public class ProdottoResources {
             return Response.status(Response.Status.BAD_REQUEST).entity(new Result(violations)).build();
         }
     }
-
-
 
 
     // OTTIENI UN PRODOTTO SPECIFICO PER ID
