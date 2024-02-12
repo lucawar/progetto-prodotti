@@ -2,18 +2,21 @@ package resources;
 
 import entities.Prodotto;
 import enums.ProdottoTipologia;
-import exceptions.BadRequestException;
 import exceptions.NotFoundException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import validation.Result;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Path("/prodotti")
 @RequestScoped
@@ -23,22 +26,31 @@ import java.util.List;
 public class ProdottoResources {
 
 
-    @Inject ProdottoRepository pr;
+    @Inject
+    ProdottoRepository pr;
+    @Inject
+    Validator validator;
 
 
-    // CREAZIONE DI UN NUOVO PRODOTTO
+    // CREAZIONE DI UN NUOVO PRODOTTO CON VALIDAZIONE
     @POST
     @Path("/crea")
     @Transactional
     public Response crea(Prodotto prodotto) {
-        if (!prodotto.isPersistent()) {
-            prodotto.persist();
-            log.info("PRODOTTO CREATO CON SUCCESSO {}", prodotto);
-            return Response.ok(prodotto).build();
+        Set<ConstraintViolation<Prodotto>> violations = validator.validate(prodotto);
+        if (violations.isEmpty()) {
+            // Se non ci sono violazioni di validazione, restituisci una risposta 200 OK con un messaggio di successo
+            log.info("CREAZIONE DEL PRODOTTO: {} - VALIDAZIONE RIUSCITA", prodotto);
+            return Response.ok(new Result("Prodotto valido! È stato convalidato con successo.")).build();
         } else {
-            throw new BadRequestException("CAMPI NON VALIDI");
+            // Se ci sono violazioni di validazione, restituisci una risposta 400 Bad Request con i dettagli delle violazioni
+            log.warn("CREAZIONE DEL PRODOTTO FALLITA A CAUSA DI VIOLAZIONI DI VALIDAZIONE {}", violations);
+            return Response.status(Response.Status.BAD_REQUEST).entity(new Result(violations)).build();
         }
     }
+
+
+
 
     // OTTIENI UN PRODOTTO SPECIFICO PER ID
     @GET
@@ -49,7 +61,8 @@ public class ProdottoResources {
             log.info("PRODOTTO CON ID: " + id + "TROVATO {}");
             return Response.ok(prodotto).build();
         } else {
-            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
+            log.warn("PRODOTTO CON ID: "  + id +  " NON TROVATO {}");
+            throw new NotFoundException("Prodotto con " + id + " non trovato {}");
         }
     }
 
@@ -65,7 +78,8 @@ public class ProdottoResources {
             log.info("LISTA PRODOTTI OTTENUTA {}", listaProdotti);
             return Response.ok(listaProdotti).build();
         } else {
-            throw new NotFoundException("NESSUN PRODOTTO TROVATO");
+            log.warn("NESSUN PRODOTTO TROVATO");
+            throw new NotFoundException("Nessun prodotto trovato");
         }
     }
 
@@ -81,10 +95,11 @@ public class ProdottoResources {
             prodottoEsistente.descrizione = nuovoProdotto.descrizione;
             prodottoEsistente.prezzo = nuovoProdotto.prezzo;
             prodottoEsistente.tipoProd = nuovoProdotto.tipoProd;
-            log.info("PRODOTTO CON ID: " + id + " TROVATO {}");
+            log.info("PRODOTTO CON ID: " + id + " MODIFICATO {}");
             return Response.ok(prodottoEsistente).build();
         } else {
-            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
+            log.warn("PRODOTTO CON ID: " + id + " NON TROVATO {}");
+            throw new NotFoundException("Prodotto con id: " + id + " non trovato {}");
         }
     }
 
@@ -99,7 +114,8 @@ public class ProdottoResources {
             log.info("PRODOTTO CON ID: " + id + " ELIMINATO {}");
             return Response.ok(true).build();
         } else {
-            throw new NotFoundException("PRODOTTO CON ID: " + id + " NON TROVATO {}");
+            log.warn("PRODOTTO CON ID: " + id + " NON TROVATO {}");
+            throw new NotFoundException("Prodotto con id: " + id + " non trovato {}");
         }
     }
 
@@ -122,7 +138,8 @@ public class ProdottoResources {
             log.info("PRODOTTI TROVATI PER I PARAMETRI SPECIFICATI");
             return Response.ok(prodotti).build();
         } else {
-            throw new NotFoundException("NESSUN PRODOTTO TROVATO PER I PARAMETRI SPECIFICATI");
+            log.warn("NESSUN PRODOTTO TROVATO CON I PARAMETRI SPECIFICATI");
+            throw new NotFoundException("Nessun prodotto trovato con i parametri specificati");
         }
     }
 }

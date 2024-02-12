@@ -31,13 +31,13 @@ public class Cliente extends PanacheEntity {
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "nome='" + nome + '\'' +
-                ", cognome='" + cognome + '\'' +
-                ", indirizzo='" + indirizzo + '\'' +
-                ", email='" + email + '\'' +
-                ", numeroTelefono='" + numeroTelefono + '\'' +
-                ", tipoCliente=" + tipoCliente +
-                '}';
+        return String.format("Cliente{" +
+                "nome='%s'," +
+                " cognome='%s'," +
+                " indirizzo='%s'," +
+                " email='%s'," +
+                " numeroTelefono='%s'," +
+                " tipoCliente=%s" +
+                "}", nome, cognome, indirizzo, email, numeroTelefono, tipoCliente);
     }
 }

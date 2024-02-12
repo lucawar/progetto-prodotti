@@ -9,4 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClienteRepository implements PanacheRepository<Cliente> {
 
+    // QUERY DINAMICA PER RICERCA DEI CLIENTI TRAMITE 1 O PIU ATTRIBUTI
+
 }
