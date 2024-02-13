@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,31 +48,28 @@ public class OrdineResouces {
         log.info("Ordine creato con successo.");
 
 
-            // Creazione dei dettagli dell'ordine
-            List<DettaglioOrdineDTO> dettagliOrdineDTO = creazioneOrdineDTO.dettagliOrdine;
-            for (DettaglioOrdineDTO dettaglioDTO : dettagliOrdineDTO) {
-                DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
-                dettaglioOrdine.setOrdine(ordine);
+        // Creazione dei dettagli dell'ordine
+        List<DettaglioOrdineDTO> dettagliOrdineDTO = creazioneOrdineDTO.dettagliOrdine;
+        for (DettaglioOrdineDTO dettaglioDTO : dettagliOrdineDTO) {
+            DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
+            dettaglioOrdine.setOrdine(ordine);
 
-                // Recupera l'oggetto Prodotto utilizzando l'ID fornito nel DTO
-                Prodotto prodotto = Prodotto.findById(dettaglioDTO.prodottoId);
+            // Recupera l'oggetto Prodotto utilizzando l'ID fornito nel DTO
+            Prodotto prodotto = Prodotto.findById(dettaglioDTO.prodottoId);
 
-                dettaglioOrdine.setProdotto(prodotto);
-                dettaglioOrdine.setQuantita(dettaglioDTO.quantita);
-                dettaglioOrdine.calcolaPrezzoParziale(); // Calcola il prezzo parziale
+            dettaglioOrdine.setProdotto(prodotto);
+            dettaglioOrdine.setQuantita(dettaglioDTO.quantita);
+            dettaglioOrdine.setPrezzoParziale(prodotto.prezzo.multiply(BigDecimal.valueOf(dettaglioDTO.quantita)));
+            dettaglioOrdine.persist();
+        }
 
-                // Aggiungi il dettaglio all'ordine
-                ordine.getDettaglioOrdine().add(dettaglioOrdine);
+        // Calcola e imposta il prezzo totale dell'ordine
+        ordine.calcolaPrezzoTotale();
 
-                // Imposta l'ordine sul dettaglio
-                dettaglioOrdine.setOrdine(ordine);
+        // Aggiorna l'ordine con il prezzo totale calcolato
+        ordine.persist();
 
-                // Salva il dettaglio dell'ordine
-                dettaglioOrdine.persist();
-            }
-
-            log.info("Ordine completato.");
-
+        log.info("Ordine completato.");
 
 
         return Response.status(Response.Status.CREATED).build();
