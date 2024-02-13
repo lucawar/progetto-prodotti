@@ -19,6 +19,7 @@ public class DettaglioOrdine extends PanacheEntity {
 
     @ManyToOne
     public Prodotto prodotto;
+
     public int quantita;
 
     public BigDecimal prezzoParziale;

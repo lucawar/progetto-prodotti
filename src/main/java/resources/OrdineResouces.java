@@ -1,7 +1,10 @@
 package resources;
 
 import DTO.CreazioneOrdineDTO;
+import DTO.DettaglioOrdineDTO;
 import entities.Cliente;
+import entities.Prodotto;
+import entities.ordine.DettaglioOrdine;
 import entities.ordine.Ordine;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
@@ -14,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Path("/ordine")
 @RequestScoped
@@ -42,7 +46,7 @@ public class OrdineResouces {
 
         log.info("Ordine creato con successo.");
 
-             /*
+
             // Creazione dei dettagli dell'ordine
             List<DettaglioOrdineDTO> dettagliOrdineDTO = creazioneOrdineDTO.dettagliOrdine;
             for (DettaglioOrdineDTO dettaglioDTO : dettagliOrdineDTO) {
@@ -67,7 +71,7 @@ public class OrdineResouces {
             }
 
             log.info("Ordine completato.");
-                */
+
 
 
         return Response.status(Response.Status.CREATED).build();

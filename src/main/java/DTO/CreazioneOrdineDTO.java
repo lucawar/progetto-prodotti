@@ -1,11 +1,13 @@
 package DTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-
-public class CreazioneOrdineDTO extends PanacheEntityBase {
+@Getter
+@Setter
+public class CreazioneOrdineDTO {
 
     public Long clienteId;
     public List<DettaglioOrdineDTO> dettagliOrdine;
