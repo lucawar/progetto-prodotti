@@ -6,9 +6,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email_cliente"})})
+@Getter
+@Setter
 public class Cliente extends PanacheEntity {
 
     @Column(name = "nome_cliente")
