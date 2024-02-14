@@ -42,11 +42,10 @@ public class OrdineResouces {
         // Calcola e imposta la data di consegna 5 giorni dopo la data dell'ordine
         LocalDateTime dataConsegna = LocalDateTime.now().plusDays(5);
         ordine.setDataConsegna(dataConsegna);
-
+        BigDecimal prezzoTotaleOrdine = BigDecimal.ZERO;
         ordine.persist();
 
         log.info("Ordine creato con successo.");
-
 
         // Creazione dei dettagli dell'ordine
         List<DettaglioOrdineDTO> dettagliOrdineDTO = creazioneOrdineDTO.dettagliOrdine;
@@ -60,12 +59,13 @@ public class OrdineResouces {
             dettaglioOrdine.setProdotto(prodotto);
             dettaglioOrdine.setQuantita(dettaglioDTO.quantita);
             dettaglioOrdine.setPrezzoParziale(prodotto.prezzo.multiply(BigDecimal.valueOf(dettaglioDTO.quantita)));
+
             dettaglioOrdine.persist();
+
+            // Calcola e imposta il prezzo totale dell'ordine
+            prezzoTotaleOrdine = prezzoTotaleOrdine.add(dettaglioOrdine.getPrezzoParziale());
         }
-
-        // Calcola e imposta il prezzo totale dell'ordine
-        ordine.calcolaPrezzoTotale();
-
+        ordine.setPrezzoTotale(prezzoTotaleOrdine);
         // Aggiorna l'ordine con il prezzo totale calcolato
         ordine.persist();
 

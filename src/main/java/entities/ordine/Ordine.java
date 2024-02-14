@@ -29,13 +29,4 @@ public class Ordine extends PanacheEntity {
 
     public BigDecimal prezzoTotale;
 
-    // CALCOLA PREZZO TOTATE ORDINE
-    public void calcolaPrezzoTotale() {
-        prezzoTotale = BigDecimal.ZERO;
-        for (DettaglioOrdine dettaglio : dettaglioOrdine) {
-            dettaglio.calcolaPrezzoParziale();
-            prezzoTotale = prezzoTotale.add(dettaglio.prezzoParziale);
-        }
-    }
-
 }
