@@ -6,15 +6,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome_prodotto", "marca"})})
-@Getter
-@Setter
 public class Prodotto extends PanacheEntity {
 
     @Column(name = "nome_prodotto")
@@ -38,6 +34,9 @@ public class Prodotto extends PanacheEntity {
     @Column(name = "tipo_prodotto")
     @NotNull(message = "Il tipo di prodotto è obbligatorio")
     public ProdottoTipologia tipoProd;
+
+    @Column(name = "immagine_prodotto")
+    public String immagine;
 
     @Override
     public String toString() {

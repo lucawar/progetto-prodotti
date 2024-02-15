@@ -1,7 +1,10 @@
 package entities.ordine;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import entities.Cliente;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -16,17 +19,32 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ordine extends PanacheEntity {
 
     @ManyToOne
     public Cliente cliente;
+
     @OneToMany(mappedBy = "ordine")
     public List<DettaglioOrdine> dettaglioOrdine = new ArrayList<>();
 
+    @Column(name = "data_ordine")
     public LocalDateTime dataOrdine;
 
+    @Column(name = "data_consegna_ordine")
     public LocalDateTime dataConsegna;
 
+    @Column(name = "prezzo_totale_ordine")
     public BigDecimal prezzoTotale;
 
+    @Override
+    public String toString() {
+        return String.format("Ordine {" +
+                "cliente='%s', " +
+                "dettaglioOrdine=%s, " +
+                "dataOrdine='%s', " +
+                "dataConsegna='%s', " +
+                "prezzoTotale=%s" +
+                "}", cliente, dataOrdine, dataConsegna, prezzoTotale);
+    }
 }

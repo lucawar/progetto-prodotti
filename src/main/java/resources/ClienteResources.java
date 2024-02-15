@@ -52,7 +52,7 @@ public class ClienteResources {
     // OTTIENI UN CLIENTE SPECIFICO PER ID
     @GET
     @Path("/{id}")
-    public Response getById(@PathParam("id") Long id) {
+    public Response getClienteById(@PathParam("id") Long id) {
         Cliente cliente = Cliente.findById(id);
         if (cliente != null) {
             log.info("CLIENTE CON ID: " + id + "TROVATO {}");
