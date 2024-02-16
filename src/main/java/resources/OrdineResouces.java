@@ -72,7 +72,8 @@ public class OrdineResouces {
             }
 
             DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
-            dettaglioOrdine.setOrdine(ordine);
+            dettaglioOrdine.setOrdine_id(ordine.id);
+
 
             // Recupera l'oggetto Prodotto utilizzando l'ID fornito nel DTO
             Prodotto prodotto = Prodotto.findById(dettaglioDTO.prodottoId);
@@ -84,7 +85,7 @@ public class OrdineResouces {
             dettaglioOrdine.setProdotto(prodotto);
             dettaglioOrdine.setQuantita(dettaglioDTO.quantita);
             dettaglioOrdine.setPrezzoParziale(prodotto.prezzo.multiply(BigDecimal.valueOf(dettaglioDTO.quantita)));
-
+            ordine.getDettaglioOrdine().add(dettaglioOrdine);
             dettaglioOrdine.persist();
 
             // Calcola e imposta il prezzo totale dell'ordine
@@ -121,9 +122,6 @@ public class OrdineResouces {
         Ordine ordine = Ordine.findById(id);
         if (ordine != null) {
             log.info("ORDINE CON ID: " + id + " TROVATO");
-            // Recupera dettagliOrdine dell'ordine associato
-            List<DettaglioOrdine> dettaglioOrdini = DettaglioOrdine.list("ordine", ordine);
-            ordine.setDettaglioOrdine(dettaglioOrdini);
             return Response.ok(ordine).build();
         } else {
             log.warn("ORDINE CON ID: " + id + " NON TROVATO");

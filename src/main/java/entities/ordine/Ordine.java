@@ -1,7 +1,5 @@
 package entities.ordine;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import entities.Cliente;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
@@ -19,13 +17,12 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Ordine extends PanacheEntity {
 
     @ManyToOne
     public Cliente cliente;
 
-    @OneToMany(mappedBy = "ordine")
+    @OneToMany
     public List<DettaglioOrdine> dettaglioOrdine = new ArrayList<>();
 
     @Column(name = "data_ordine")

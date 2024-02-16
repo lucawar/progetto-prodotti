@@ -16,8 +16,7 @@ import java.math.BigDecimal;
 @Table(name = "dettaglio_ordine")
 public class DettaglioOrdine extends PanacheEntity {
 
-    @ManyToOne
-    public Ordine ordine;
+    public Long ordine_id;
 
     @ManyToOne
     public Prodotto prodotto;
