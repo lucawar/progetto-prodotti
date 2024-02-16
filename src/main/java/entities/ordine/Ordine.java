@@ -36,12 +36,10 @@ public class Ordine extends PanacheEntity {
 
     @Override
     public String toString() {
-        return String.format("Ordine {" +
-                "cliente='%s', " +
-                "dettaglioOrdine=%s, " +
-                "dataOrdine='%s', " +
-                "dataConsegna='%s', " +
-                "prezzoTotale=%s" +
-                "}", cliente, dataOrdine, dataConsegna, prezzoTotale);
+        return String.format("Ordine {cliente='%s', dataOrdine='%s', dataConsegna='%s', prezzoTotale=%s}",
+                cliente != null ? cliente.toString() : "null",
+                dataOrdine != null ? dataOrdine.toString() : "null",
+                dataConsegna != null ? dataConsegna.toString() : "null",
+                prezzoTotale != null ? prezzoTotale.toString() : "null");
     }
 }

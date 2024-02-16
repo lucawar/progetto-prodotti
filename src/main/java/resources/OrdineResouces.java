@@ -72,7 +72,7 @@ public class OrdineResouces {
             }
 
             DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
-            dettaglioOrdine.setOrdine_id(ordine.id);
+            //dettaglioOrdine.setOrdine_id(ordine.id);
 
 
             // Recupera l'oggetto Prodotto utilizzando l'ID fornito nel DTO
@@ -86,10 +86,13 @@ public class OrdineResouces {
             dettaglioOrdine.setQuantita(dettaglioDTO.quantita);
             dettaglioOrdine.setPrezzoParziale(prodotto.prezzo.multiply(BigDecimal.valueOf(dettaglioDTO.quantita)));
             ordine.getDettaglioOrdine().add(dettaglioOrdine);
+
+            // Persisti il dettaglio dell'ordine
             dettaglioOrdine.persist();
 
             // Calcola e imposta il prezzo totale dell'ordine
             prezzoTotaleOrdine = prezzoTotaleOrdine.add(dettaglioOrdine.getPrezzoParziale());
+            //dettaglioOrdine.persist();
         }
 
         ordine.setPrezzoTotale(prezzoTotaleOrdine);
