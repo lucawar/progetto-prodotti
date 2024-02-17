@@ -94,6 +94,7 @@ public class ProdottoResources {
             prodottoEsistente.descrizione = nuovoProdotto.descrizione;
             prodottoEsistente.prezzo = nuovoProdotto.prezzo;
             prodottoEsistente.tipoProd = nuovoProdotto.tipoProd;
+            prodottoEsistente.immagine = nuovoProdotto.immagine;
             log.info("PRODOTTO CON ID: " + id + " MODIFICATO {}");
             return Response.ok(prodottoEsistente).build();
         } else {

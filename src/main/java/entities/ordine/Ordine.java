@@ -22,7 +22,7 @@ public class Ordine extends PanacheEntity {
     @ManyToOne
     public Cliente cliente;
 
-    @OneToMany
+    @OneToMany(mappedBy = "ordine_id")
     public List<DettaglioOrdine> dettaglioOrdine = new ArrayList<>();
 
     @Column(name = "data_ordine")

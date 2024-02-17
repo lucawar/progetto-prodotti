@@ -25,4 +25,8 @@ public class DettaglioOrdine extends PanacheEntity {
 
     public BigDecimal prezzoParziale;
 
+    public void calcolaPrezzoParziale() {
+        prezzoParziale = prodotto.prezzo.multiply(BigDecimal.valueOf(quantita));
+    }
+
 }

@@ -10,18 +10,15 @@ import exceptions.NotFoundException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import validation.Result;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Path("/ordine")
 @RequestScoped
@@ -33,6 +30,8 @@ public class OrdineResouces {
     @Inject
     Validator validator;
 
+
+    /*
     // CREA NUOVO ORDINE
     @POST
     @Path("/crea")
@@ -101,6 +100,38 @@ public class OrdineResouces {
         log.info("ORDINE COMPLETATO-------------");
         return Response.status(Response.Status.CREATED).entity(new Result("Ordine creato con successo")).build();
     }
+*/
+
+    // CREA ORDINE
+    @POST
+    @Path("/crea")
+    @Transactional
+    public Response creaOrdine(CreazioneOrdineDTO creazioneOrdineDTO) {
+
+        Cliente cliente = Cliente.findById(creazioneOrdineDTO.clienteId);
+        Ordine ordine = new Ordine();
+        ordine.setCliente(cliente);
+        ordine.setDataOrdine(LocalDateTime.now());
+        ordine.setDataConsegna(LocalDateTime.now().plusDays(5));
+        ordine.persist();
+        BigDecimal prezzoTotaleOrdine = BigDecimal.ZERO;
+
+        for (DettaglioOrdineDTO dettaglioDTO : creazioneOrdineDTO.dettagliOrdine) {
+            DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
+            dettaglioOrdine.ordine_id = ordine.id;
+            dettaglioOrdine.prodotto = Prodotto.findById(dettaglioDTO.prodottoId);
+            dettaglioOrdine.quantita = dettaglioDTO.quantita;
+            dettaglioOrdine.calcolaPrezzoParziale();
+            dettaglioOrdine.persist();
+            prezzoTotaleOrdine = prezzoTotaleOrdine.add(dettaglioOrdine.getPrezzoParziale());
+        }
+        ordine.setPrezzoTotale(prezzoTotaleOrdine);
+        ordine.persist();
+
+        return Response.status(Response.Status.CREATED).build();
+
+    }
+
 
     // OTTIENI LISTA ORDINI
     @GET
