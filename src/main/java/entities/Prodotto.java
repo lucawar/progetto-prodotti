@@ -48,4 +48,6 @@ public class Prodotto extends PanacheEntity {
                 "tipoProd=%s" +
                 "}", nome, marca, descrizione, prezzo, tipoProd);
     }
+
+    // prova commit
 }

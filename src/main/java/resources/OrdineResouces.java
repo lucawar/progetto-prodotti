@@ -10,15 +10,18 @@ import exceptions.NotFoundException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import validation.Result;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Path("/ordine")
 @RequestScoped
@@ -108,7 +111,17 @@ public class OrdineResouces {
     @Transactional
     public Response creaOrdine(CreazioneOrdineDTO creazioneOrdineDTO) {
 
+        Set<ConstraintViolation<CreazioneOrdineDTO>> violations = validator.validate(creazioneOrdineDTO);
+        if (!violations.isEmpty()) {
+            log.warn("CREAZIONE DELL'ORDINE FALLITA A CAUSA DI VIOLAZIONI DI VALIDAZIONE {}", violations);
+            return Response.status(Response.Status.BAD_REQUEST).entity(new Result(violations)).build();
+        }
+
         Cliente cliente = Cliente.findById(creazioneOrdineDTO.clienteId);
+        if (cliente == null) {
+            log.warn("CLIENTE CON ID {} NON TROVATO", creazioneOrdineDTO.clienteId);
+            throw new NotFoundException("Cliente non trovato");
+        }
         Ordine ordine = new Ordine();
         ordine.setCliente(cliente);
         ordine.setDataOrdine(LocalDateTime.now());
@@ -117,6 +130,10 @@ public class OrdineResouces {
         BigDecimal prezzoTotaleOrdine = BigDecimal.ZERO;
 
         for (DettaglioOrdineDTO dettaglioDTO : creazioneOrdineDTO.dettagliOrdine) {
+            if (dettaglioDTO.prodottoId == null || dettaglioDTO.quantita >= 0) {
+                log.warn("ID PRODOTTO O QUANTITÀ MANCANTI IN UN DETTAGLIO ORDINE");
+                return Response.status(Response.Status.BAD_REQUEST).entity(new Result("ID prodotto o quantità mancanti in un dettaglio ordine")).build();
+            }
             DettaglioOrdine dettaglioOrdine = new DettaglioOrdine();
             dettaglioOrdine.ordine_id = ordine.id;
             dettaglioOrdine.prodotto = Prodotto.findById(dettaglioDTO.prodottoId);
@@ -128,7 +145,7 @@ public class OrdineResouces {
         ordine.setPrezzoTotale(prezzoTotaleOrdine);
         ordine.persist();
 
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED).entity(new Result("Ordine creato con successo")).build();
 
     }
 
