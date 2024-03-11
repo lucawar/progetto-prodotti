@@ -17,6 +17,7 @@ import validation.Result;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Path("/prodotti")
 @RequestScoped
@@ -36,7 +37,7 @@ public class ProdottoResources {
     @POST
     @Path("/crea")
     @Transactional
-    public Response crea(Prodotto prodotto) {
+    public Response creaProdotto(Prodotto prodotto) {
         Set<ConstraintViolation<Prodotto>> violations = validator.validate(prodotto);
         if (violations.isEmpty()) {
             // Se non ci sono violazioni di validazione, restituisci una risposta 200 OK con un messaggio di successo
@@ -54,7 +55,7 @@ public class ProdottoResources {
     // OTTIENI UN PRODOTTO SPECIFICO PER ID
     @GET
     @Path("/{id}")
-    public Response getById(@PathParam("id") Long id) {
+    public Response getProdottoById(@PathParam("id") Long id) {
         Prodotto prodotto = Prodotto.findById(id);
         if (prodotto != null) {
             log.info("PRODOTTO CON ID: " + id + "TROVATO {}");
@@ -68,7 +69,7 @@ public class ProdottoResources {
     // OTTIENI LA LISTA DI TUTTI I PRODOTTI
     @GET
     @Path("/all")
-    public Response getAll(
+    public Response getAllProdotti(
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("10") int limit) {
 
@@ -86,7 +87,7 @@ public class ProdottoResources {
     @PUT
     @Path("/modifica/{id}")
     @Transactional
-    public Response modifica(@PathParam("id") Long id, Prodotto nuovoProdotto) {
+    public Response modificaProdotto(@PathParam("id") Long id, Prodotto nuovoProdotto) {
         Prodotto prodottoEsistente = Prodotto.findById(id);
         if (prodottoEsistente != null) {
             prodottoEsistente.nome = nuovoProdotto.nome;
@@ -107,7 +108,7 @@ public class ProdottoResources {
     @DELETE
     @Path("/elimina/{id}")
     @Transactional
-    public Response elimina(@PathParam("id") Long id) {
+    public Response eliminaProdotto(@PathParam("id") Long id) {
         Prodotto prodotto = Prodotto.findById(id);
         if (prodotto != null) {
             prodotto.delete();
@@ -142,6 +143,19 @@ public class ProdottoResources {
             throw new NotFoundException("Nessun prodotto trovato con i parametri specificati");
         }
     }
+
+    // FILTRAGGIO DI PROVA CON LAMBDA
+    @GET
+    @Path("/filtro-SMARTPHONE")
+    public Response getProdottiSMARTPHONE() {
+        List<Prodotto> prodotti = pr.findAll().list();
+        List<Prodotto> smartphoneProdotti = prodotti.stream()
+                .filter(p -> ProdottoTipologia.SMARTPHONE.equals(p.getTipoProd()))
+                .filter(p -> p.nome.equals("S24"))
+                .collect(Collectors.toList());
+
+        return Response.ok(smartphoneProdotti).build();
+}
 }
 
 

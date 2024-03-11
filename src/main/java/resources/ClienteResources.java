@@ -34,7 +34,7 @@ public class ClienteResources {
     @POST
     @Path("/crea")
     @Transactional
-    public Response crea(Cliente cliente) {
+    public Response creaCliente(Cliente cliente) {
         Set<ConstraintViolation<Cliente>> violations = validator.validate(cliente);
         if (violations.isEmpty()) {
             // Se non ci sono violazioni di validazione, restituisci una risposta 200 OK con un messaggio di successo
@@ -66,7 +66,7 @@ public class ClienteResources {
     // OTTIENI LA LISTA DI TUTTI I PRODOTTI
     @GET
     @Path("/all")
-    public Response getAll(
+    public Response getAllClienti(
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("10") int limit) {
 
@@ -84,7 +84,7 @@ public class ClienteResources {
     @PUT
     @Path("/modifica/{id}")
     @Transactional
-    public Response modifica(@PathParam("id") Long id, Cliente nuovoCLiente) {
+    public Response modificaCliente(@PathParam("id") Long id, Cliente nuovoCLiente) {
         Cliente clienteEsistente = Cliente.findById(id);
         if (clienteEsistente != null) {
             clienteEsistente.nome = nuovoCLiente.nome;
@@ -104,7 +104,7 @@ public class ClienteResources {
     @DELETE
     @Path("/elimina/{id}")
     @Transactional
-    public Response elimina(@PathParam("id") Long id) {
+    public Response eliminaCliente(@PathParam("id") Long id) {
         Cliente cliente = Cliente.findById(id);
         if (cliente != null) {
             cliente.delete();

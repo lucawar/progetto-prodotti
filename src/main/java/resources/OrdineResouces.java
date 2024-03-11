@@ -153,7 +153,7 @@ public class OrdineResouces {
     // OTTIENI LISTA ORDINI
     @GET
     @Path("/all")
-    public Response getAll(
+    public Response getAllOrdini(
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("10") int limit) {
         List<Ordine> listaOrdini = Ordine.findAll().page(offset, limit).list();

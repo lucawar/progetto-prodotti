@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome_prodotto", "marca"})})
 public class Prodotto extends PanacheEntity {
 
@@ -48,6 +52,4 @@ public class Prodotto extends PanacheEntity {
                 "tipoProd=%s" +
                 "}", nome, marca, descrizione, prezzo, tipoProd);
     }
-
-    // prova commit
 }
